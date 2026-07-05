@@ -1,0 +1,63 @@
+:root {
+  --color-bg: #f6f5f2;
+  --color-surface: #ffffff;
+  --color-surface-alt: #edeae3;
+  --color-text: #1f2320;
+  --color-text-muted: #5b6360;
+  --color-border: #d8d3c8;
+  --color-accent: #2f6f5e;
+  --color-accent-hover: #255a4c;
+  --color-accent-contrast: #ffffff;
+  --color-danger: #b3402f;
+  --color-success: #2f6f5e;
+  --color-given: #1f2320;
+  --color-user-entry: #2f6f5e;
+  --color-hint: #a2672c;
+  --color-conflict-bg: #f6d9d4;
+  --color-conflict-text: #8a2f21;
+  --color-selected-bg: #dcecE6;
+  --color-peer-bg: #eef2ef;
+
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #16191a;
+    --color-surface: #1f2426;
+    --color-surface-alt: #262c2e;
+    --color-text: #e9ecea;
+    --color-text-muted: #9aa3a0;
+    --color-border: #333a3c;
+    --color-accent: #4fae93;
+    --color-accent-hover: #6ec3aa;
+    --color-accent-contrast: #0b1211;
+    --color-danger: #e08272;
+    --color-success: #4fae93;
+    --color-given: #e9ecea;
+    --color-user-entry: #4fae93;
+    --color-hint: #d9a45c;
+    --color-conflict-bg: #4a2a26;
+    --color-conflict-text: #f0b3a6;
+    --color-selected-bg: #24413a;
+    --color-peer-bg: #1d2726;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}

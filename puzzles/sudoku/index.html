@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sudoku — Puzzle Hub</title>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/base.css" />
+  <link rel="stylesheet" href="../../css/components.css" />
+  <link rel="stylesheet" href="sudoku.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="site-logo" href="../../index.html">Puzzle Hub</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="../../index.html">Puzzles</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container sudoku-page">
+      <h1>Sudoku</h1>
+
+      <div class="sudoku-toolbar">
+        <label for="difficulty-select">Difficulty</label>
+        <select id="difficulty-select">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <button id="new-puzzle-btn" class="btn btn-primary">New puzzle</button>
+      </div>
+
+      <div class="sudoku-stats">
+        <span>Time: <strong id="timer-display">0:00</strong></span>
+        <span>Hints used: <strong id="hint-count">0</strong></span>
+      </div>
+
+      <div id="sudoku-grid" class="sudoku-grid" role="group" aria-label="Sudoku grid"></div>
+
+      <div class="btn-group sudoku-actions">
+        <button id="hint-btn" class="btn">Hint</button>
+        <button id="solve-btn" class="btn">Solve</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">Puzzle Hub</div>
+  </footer>
+
+  <div id="win-modal" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="win-modal-title">
+      <h2 id="win-modal-title">Solved!</h2>
+      <p>Time: <strong id="win-time"></strong></p>
+      <button id="win-modal-close" class="btn btn-primary">Close</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
