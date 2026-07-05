@@ -1,6 +1,6 @@
 import { generatePuzzle } from "./difficulty.js";
 import { getConflicts, isSolved } from "./validation.js";
-import { createGrid, renderGrid } from "./ui.js";
+import { createGrid, renderGrid, refreshSelectionHighlight } from "./ui.js";
 import { loadGame, saveGame, clearGame } from "./persistence.js";
 import { createTimer, formatElapsed } from "../../../js/common/timer.js";
 
@@ -62,6 +62,7 @@ function render() {
     hintCells: state.hintCells,
     conflicts,
   });
+  refreshSelectionHighlight(cells);
   timerDisplay.textContent = formatElapsed(state.elapsedSeconds);
   hintCountDisplay.textContent = String(state.hintCells.length);
   const solved = state.status === "solved";

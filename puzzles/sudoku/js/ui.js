@@ -20,15 +20,21 @@ function peerIndices(index) {
 }
 
 function clearHighlights(cells) {
-  cells.forEach((cell) => cell.classList.remove("selected", "peer"));
+  cells.forEach((cell) => cell.classList.remove("selected", "peer", "same-value"));
 }
 
-function highlightPeers(cells, index) {
+function highlightSelection(cells, index) {
   clearHighlights(cells);
   cells[index].classList.add("selected");
   for (const peerIndex of peerIndices(index)) {
     cells[peerIndex].classList.add("peer");
   }
+
+  const value = cells[index].value;
+  if (!value) return;
+  cells.forEach((cell, i) => {
+    if (i !== index && cell.value === value) cell.classList.add("same-value");
+  });
 }
 
 function handleArrowNav(event, index, container) {
@@ -79,11 +85,26 @@ export function createGrid(container, { onCellChange } = {}) {
 
   container.addEventListener("focusin", (event) => {
     const index = Number(event.target?.dataset?.index);
-    if (Number.isInteger(index)) highlightPeers(cells, index);
+    if (Number.isInteger(index)) highlightSelection(cells, index);
   });
   container.addEventListener("focusout", () => clearHighlights(cells));
 
   return cells;
+}
+
+/**
+ * Re-applies selection/peer/same-value highlighting for whichever cell is
+ * currently focused. Call after re-rendering values (e.g. hint/solve) so a
+ * focused cell's highlighting stays in sync with values that changed out
+ * from under it.
+ */
+export function refreshSelectionHighlight(cells) {
+  const index = cells.indexOf(document.activeElement);
+  if (index === -1) {
+    clearHighlights(cells);
+  } else {
+    highlightSelection(cells, index);
+  }
 }
 
 /** Syncs the DOM cells to the current game state: values, given/hint/conflict styling. */

@@ -80,6 +80,10 @@
   background: var(--color-selected-bg);
 }
 
+.sudoku-cell.same-value {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
 .sudoku-cell.conflict {
   background: var(--color-conflict-bg);
   color: var(--color-conflict-text);
