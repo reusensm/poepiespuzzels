@@ -55,7 +55,7 @@
     }
 
     // --- generateSolution ---
-    for (const N of [6, 8, 10]) {
+    for (const N of [6, 8, 10, 12]) {
       const solution = generateSolution(N);
       assert(solution.length === N * N, `generateSolution(${N}) returns ${N * N} cells`);
       assert(solution.every((v) => v === 0 || v === 1), `generateSolution(${N}) has no blanks`);

@@ -8,10 +8,15 @@ const BLANK = -1;
  * track, which is what actually makes Binairo harder, and it keeps the
  * per-difficulty tuning to a single number instead of two.
  */
-export const SIZE_BY_DIFFICULTY = { easy: 6, medium: 8, hard: 10 };
+export const SIZE_BY_DIFFICULTY = { easy: 6, medium: 8, hard: 10, expert: 12 };
 export const DIFFICULTIES = Object.keys(SIZE_BY_DIFFICULTY);
 
-const CLUE_FRACTION = { easy: 0.6, medium: 0.5, hard: 0.42 };
+// 14x14 was tried and rejected: a single digging pass took 2+ minutes and
+// sometimes didn't finish at all, because the backtracking solver has no
+// constraint-propagation/lookahead and its search tree blows up once the
+// grid gets both large and sparse. 12x12 stays comfortably fast (<1.5s
+// worst-case observed) while still being a meaningful step up from "hard".
+const CLUE_FRACTION = { easy: 0.6, medium: 0.5, hard: 0.42, expert: 0.38 };
 
 function shuffledIndices(count) {
   const indices = Array.from({ length: count }, (_, i) => i);
