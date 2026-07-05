@@ -54,6 +54,17 @@ main {
   padding: var(--space-8) 0;
 }
 
+/* Home page note */
+.love-note {
+  background: var(--color-surface-alt);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+  color: var(--color-text);
+  font-style: italic;
+}
+
 /* Puzzle card grid (hub page) */
 .puzzle-grid {
   display: grid;
