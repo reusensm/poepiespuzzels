@@ -26,15 +26,28 @@ function clearHighlights(cells) {
 function highlightSelection(cells, index) {
   clearHighlights(cells);
   cells[index].classList.add("selected");
-  for (const peerIndex of peerIndices(index)) {
-    cells[peerIndex].classList.add("peer");
-  }
 
   const value = cells[index].value;
-  if (!value) return;
-  cells.forEach((cell, i) => {
-    if (i !== index && cell.value === value) cell.classList.add("same-value");
-  });
+  const sameValueIndices = value
+    ? cells.reduce((acc, cell, i) => {
+        if (i !== index && cell.value === value) acc.push(i);
+        return acc;
+      }, [])
+    : [];
+
+  const peers = peerIndices(index);
+  for (const sameValueIndex of sameValueIndices) {
+    for (const peerIndex of peerIndices(sameValueIndex)) peers.add(peerIndex);
+  }
+  peers.delete(index);
+  for (const sameValueIndex of sameValueIndices) peers.delete(sameValueIndex);
+
+  for (const peerIndex of peers) {
+    cells[peerIndex].classList.add("peer");
+  }
+  for (const sameValueIndex of sameValueIndices) {
+    cells[sameValueIndex].classList.add("same-value");
+  }
 }
 
 function handleArrowNav(event, index, container) {
