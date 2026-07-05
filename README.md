@@ -1,6 +1,6 @@
 # Puzzle Hub
 
-A static, no-build-step puzzle site for GitHub Pages. Sudoku today, more puzzle types over time.
+A static, no-build-step puzzle site for GitHub Pages. Sudoku and Binairo today, more puzzle types over time.
 
 ## Stack
 
@@ -14,6 +14,7 @@ js/common/               Shared, puzzle-agnostic helpers (localStorage wrapper, 
 js/home.js               Renders the hub's puzzle cards from puzzles/registry.js
 puzzles/registry.js       Single source of truth for which puzzles show up on the hub
 puzzles/sudoku/           Sudoku's own page, styles, and JS — self-contained
+puzzles/binairo/          Binairo's own page, styles, and JS — self-contained
 tests/                   Zero-dependency browser test pages (open directly, or serve locally)
 ```
 
@@ -42,3 +43,11 @@ Then open `http://localhost:8000/`. Opening `index.html` directly via `file://` 
 - **Hints/Solve**: read from the solution stored alongside the puzzle — no live re-solving during play.
 - **Validation**: pure row/column/box duplicate detection, never compares against the stored solution, so a correct-so-far grid can't be brute-forced cell by cell.
 - **Persistence**: `localStorage` under `puzzlehub:sudoku:current`, written on every change and restored on load.
+
+## Binairo implementation notes
+
+- **Rules**: each cell holds 0 or 1; no three consecutive equal values in a row or column; every row/column has an equal split of 0s and 1s; no two rows (or columns) are identical.
+- **Generation**: same shape as Sudoku's — randomized backtracking builds a full solution (`puzzles/binairo/js/core.js`), then cells are removed one at a time while a uniqueness check confirms the puzzle still has exactly one solution (`difficulty.js`). No symmetric-pair removal here; it's not a convention for this puzzle type.
+- **Difficulty**: mapped to grid size (Easy 6×6 / Medium 8×8 / Hard 10×10) rather than clue count — a bigger grid has more row/column interactions to track, which is what actually makes Binairo harder, and it's a single number to tune instead of two.
+- **Hints/Solve/Validation/Persistence**: same design as Sudoku (solution stored alongside the puzzle, pure rule-based conflict checking, no solution-comparison, `localStorage` under `puzzlehub:binairo:current`).
+- **UI difference from Sudoku**: cells are buttons, not text inputs — click cycles blank → 0 → 1 → blank (touch-friendly), while typing "0"/"1" or pressing Backspace still works for keyboard users.

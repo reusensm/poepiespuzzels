@@ -100,6 +100,38 @@ main {
   pointer-events: none;
 }
 
+/* Puzzle play-page toolbar/stats/actions (shared across puzzle types) */
+.puzzle-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.puzzle-toolbar select {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.puzzle-stats {
+  display: flex;
+  gap: var(--space-6);
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.puzzle-actions {
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;

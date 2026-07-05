@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Binairo core tests</title>
+  <style>
+    body { font-family: monospace; padding: 1.5rem; background: #111; color: #eee; }
+    .pass { color: #4fae93; }
+    .fail { color: #e08272; font-weight: bold; }
+    li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Binairo core tests</h1>
+  <ul id="results"></ul>
+
+  <script type="module">
+    import { generateSolution, countSolutions } from "../puzzles/binairo/js/core.js";
+    import { generatePuzzle, SIZE_BY_DIFFICULTY, DIFFICULTIES } from "../puzzles/binairo/js/difficulty.js";
+    import { getConflicts, isSolved } from "../puzzles/binairo/js/validation.js";
+
+    const results = document.getElementById("results");
+    let failures = 0;
+
+    function assert(condition, message) {
+      const li = document.createElement("li");
+      li.className = condition ? "pass" : "fail";
+      li.textContent = (condition ? "PASS: " : "FAIL: ") + message;
+      results.appendChild(li);
+      console.assert(condition, message);
+      if (!condition) failures += 1;
+    }
+
+    function hasNoTriple(values) {
+      for (let i = 0; i + 2 < values.length; i++) {
+        if (values[i] === values[i + 1] && values[i + 1] === values[i + 2]) return false;
+      }
+      return true;
+    }
+
+    function rowsOf(grid, N) {
+      const rows = [];
+      for (let r = 0; r < N; r++) rows.push(grid.slice(r * N, r * N + N));
+      return rows;
+    }
+
+    function colsOf(grid, N) {
+      const cols = [];
+      for (let c = 0; c < N; c++) cols.push(Array.from({ length: N }, (_, r) => grid[r * N + c]));
+      return cols;
+    }
+
+    function sameLine(a, b) {
+      return a.every((v, i) => v === b[i]);
+    }
+
+    // --- generateSolution ---
+    for (const N of [6, 8, 10]) {
+      const solution = generateSolution(N);
+      assert(solution.length === N * N, `generateSolution(${N}) returns ${N * N} cells`);
+      assert(solution.every((v) => v === 0 || v === 1), `generateSolution(${N}) has no blanks`);
+
+      const rows = rowsOf(solution, N);
+      const cols = colsOf(solution, N);
+
+      assert(rows.every(hasNoTriple), `generateSolution(${N}) rows have no three-in-a-row`);
+      assert(cols.every(hasNoTriple), `generateSolution(${N}) columns have no three-in-a-row`);
+
+      const half = N / 2;
+      assert(
+        rows.every((r) => r.filter((v) => v === 0).length === half),
+        `generateSolution(${N}) rows are balanced (${half} zeros / ${half} ones)`
+      );
+      assert(
+        cols.every((c) => c.filter((v) => v === 0).length === half),
+        `generateSolution(${N}) columns are balanced`
+      );
+
+      let rowsDistinct = true;
+      for (let i = 0; i < rows.length; i++) {
+        for (let j = i + 1; j < rows.length; j++) {
+          if (sameLine(rows[i], rows[j])) rowsDistinct = false;
+        }
+      }
+      assert(rowsDistinct, `generateSolution(${N}) has no duplicate rows`);
+
+      let colsDistinct = true;
+      for (let i = 0; i < cols.length; i++) {
+        for (let j = i + 1; j < cols.length; j++) {
+          if (sameLine(cols[i], cols[j])) colsDistinct = false;
+        }
+      }
+      assert(colsDistinct, `generateSolution(${N}) has no duplicate columns`);
+
+      assert(getConflicts(solution, N).size === 0, `generateSolution(${N}) is conflict-free per getConflicts`);
+    }
+
+    // --- generatePuzzle per difficulty ---
+    const CLUE_TOLERANCE = 4;
+    for (const difficulty of DIFFICULTIES) {
+      const N = SIZE_BY_DIFFICULTY[difficulty];
+      const { givens, solution } = generatePuzzle(difficulty);
+      const clueCount = givens.filter((v) => v === 0 || v === 1).length;
+
+      assert(givens.length === N * N, `${difficulty} puzzle has ${N * N} cells`);
+      assert(
+        clueCount <= Math.round(N * N * 0.6) + CLUE_TOLERANCE,
+        `${difficulty} puzzle clue count is reasonable (got ${clueCount} of ${N * N})`
+      );
+
+      const matchesSolution = givens.every((v, i) => (v !== 0 && v !== 1) || v === solution[i]);
+      assert(matchesSolution, `${difficulty} givens are a subset of the solution`);
+
+      const solutionCount = countSolutions(givens, N, 2);
+      assert(solutionCount === 1, `${difficulty} puzzle has a unique solution (found ${solutionCount})`);
+    }
+
+    // --- getConflicts: runs ---
+    const N = 6;
+    const blankGrid = () => new Array(N * N).fill(-1);
+
+    const runGrid = blankGrid();
+    runGrid[0] = 0; runGrid[1] = 0; runGrid[2] = 0; // three zeros in row 0
+    const runConflicts = getConflicts(runGrid, N);
+    assert(runConflicts.has(0) && runConflicts.has(1) && runConflicts.has(2), "getConflicts: three-in-a-row detected");
+
+    const noRunGrid = blankGrid();
+    noRunGrid[0] = 0; noRunGrid[1] = 0; noRunGrid[2] = 1;
+    assert(getConflicts(noRunGrid, N).size === 0, "getConflicts: two-then-different is not flagged");
+
+    // --- getConflicts: balance ---
+    const balanceGrid = blankGrid();
+    // row 0: four zeros (half is 3, so 4 exceeds it) placed non-consecutively to isolate the balance check
+    balanceGrid[0] = 0; balanceGrid[1] = 1; balanceGrid[2] = 0; balanceGrid[3] = 1; balanceGrid[4] = 0; balanceGrid[5] = 0;
+    const balanceConflicts = getConflicts(balanceGrid, N);
+    assert(balanceConflicts.size > 0, "getConflicts: row exceeding N/2 of one value is flagged");
+
+    // --- getConflicts: duplicate rows ---
+    const dupGrid = blankGrid();
+    const patternA = [0, 1, 0, 1, 0, 1];
+    for (let c = 0; c < N; c++) {
+      dupGrid[0 * N + c] = patternA[c];
+      dupGrid[1 * N + c] = patternA[c];
+    }
+    const dupConflicts = getConflicts(dupGrid, N);
+    assert(
+      Array.from({ length: N }, (_, c) => 0 * N + c).every((i) => dupConflicts.has(i)) &&
+        Array.from({ length: N }, (_, c) => 1 * N + c).every((i) => dupConflicts.has(i)),
+      "getConflicts: duplicate completed rows are flagged"
+    );
+
+    // --- isSolved ---
+    const solvedGrid = generateSolution(6);
+    assert(isSolved(solvedGrid, 6) === true, "isSolved: a complete valid solution is solved");
+    const incomplete = solvedGrid.slice();
+    incomplete[0] = -1;
+    assert(isSolved(incomplete, 6) === false, "isSolved: a grid with a blank is not solved");
+    assert(isSolved(runGrid, 6) === false, "isSolved: a grid with conflicts is not solved");
+
+    const summary = document.createElement("h2");
+    summary.textContent = failures === 0 ? "All tests passed" : `${failures} test(s) failed`;
+    summary.className = failures === 0 ? "pass" : "fail";
+    document.body.appendChild(summary);
+  </script>
+</body>
+</html>

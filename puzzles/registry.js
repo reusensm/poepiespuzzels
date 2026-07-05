@@ -7,4 +7,12 @@ export const puzzles = [
     icon: "▦",
     available: true,
   },
+  {
+    id: "binairo",
+    name: "Binairo",
+    path: "puzzles/binairo/index.html",
+    blurb: "Fill each cell with 0 or 1: no three in a row, balanced rows and columns, no duplicate lines.",
+    icon: "⚏",
+    available: true,
+  },
 ];

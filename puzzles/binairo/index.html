@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sudoku — Puzzle Hub</title>
+  <title>Binairo — Puzzle Hub</title>
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
   <link rel="stylesheet" href="../../css/theme.css" />
   <link rel="stylesheet" href="../../css/base.css" />
   <link rel="stylesheet" href="../../css/components.css" />
-  <link rel="stylesheet" href="sudoku.css" />
+  <link rel="stylesheet" href="binairo.css" />
 </head>
 <body>
   <header class="site-header">
@@ -21,15 +21,16 @@
   </header>
 
   <main>
-    <div class="container sudoku-page">
-      <h1>Sudoku</h1>
+    <div class="container binairo-page">
+      <h1>Binairo</h1>
+      <p>Fill each cell with 0 or 1. No three in a row, each row/column has an equal split, and no two rows or columns match.</p>
 
       <div class="puzzle-toolbar">
         <label for="difficulty-select">Difficulty</label>
         <select id="difficulty-select">
-          <option value="easy">Easy</option>
-          <option value="medium" selected>Medium</option>
-          <option value="hard">Hard</option>
+          <option value="easy">Easy (6×6)</option>
+          <option value="medium" selected>Medium (8×8)</option>
+          <option value="hard">Hard (10×10)</option>
         </select>
         <button id="new-puzzle-btn" class="btn btn-primary">New puzzle</button>
       </div>
@@ -39,7 +40,7 @@
         <span>Hints used: <strong id="hint-count">0</strong></span>
       </div>
 
-      <div id="sudoku-grid" class="sudoku-grid" role="group" aria-label="Sudoku grid"></div>
+      <div id="binairo-grid" class="binairo-grid" role="group" aria-label="Binairo grid"></div>
 
       <div class="btn-group puzzle-actions">
         <button id="hint-btn" class="btn">Hint</button>
